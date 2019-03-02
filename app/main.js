@@ -1,4 +1,6 @@
-const {app, BrowserWindow} = require('electron');
+const fs = require('fs');
+
+const {app, BrowserWindow, dialog} = require('electron');
 
 let mainWindow = null;
 
@@ -8,8 +10,27 @@ app.on('ready', () => {
 
     mainWindow.loadFile(`${__dirname}/index.html`);
 
+    getFileFromUser();
+
     mainWindow.on('ready-to-show', () =>{
         mainWindow.show();
     });
 });
 
+const getFileFromUser = () => {
+    const files = dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [
+            {name: 'Markdown', extensions: ['md', 'mdown', 'markdown']},
+            {name: 'Text Files', extensions: ['txt', 'text']},
+            {name: 'CSV Files', extensions: ['csv']}
+
+        ]
+    });
+
+    const file = files[0];
+    const content = fs.readFileSync(file).toString();
+
+    if(!files) return;
+    console.log(content);
+};
