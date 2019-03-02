@@ -29,8 +29,13 @@ exports.getFileFromUser = () => {
     });
 
     const file = files[0];
-    const content = fs.readFileSync(file).toString();
-
+    
     if(!files) return;
-    console.log(content);
+
+    openFile(file);
+};
+
+const openFile = (file) => {
+    const content = fs.readFileSync(file).toString();
+    mainWindow.webContents.send('file-opened', file, content);
 };
